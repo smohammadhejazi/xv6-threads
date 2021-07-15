@@ -95,3 +95,15 @@ sys_getyear(void)
 {
   return getyear();
 }
+
+int
+sys_clone(void)
+{
+  return -1;
+}
+
+int
+sys_join(void)
+{
+  return -1;
+}

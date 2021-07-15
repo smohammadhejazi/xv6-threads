@@ -538,3 +538,15 @@ getyear(void)
 {
   return 2021;
 }
+
+int
+clone(void(*function)(void*,void*), void *arg1, void *arg2, void* stack)
+{
+  return -1;
+}
+
+int
+join(void** stack)
+{
+  return -1;
+}
