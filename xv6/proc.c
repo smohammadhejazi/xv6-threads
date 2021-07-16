@@ -540,7 +540,7 @@ getyear(void)
 }
 
 int
-clone(void (*function)(void*, void*), void* arg, void* stack)
+clone(void (*function)(void*), void* arg, void* stack)
 {
   int i, pid;
   struct proc *np;
@@ -561,11 +561,11 @@ clone(void (*function)(void*, void*), void* arg, void* stack)
 
   // Stack pointer is at the bottom, bring it up; push return
   // address and arg
-  *(uint*)(stack + PGSIZE - 1 * sizeof(void *)) = (uint*)arg;
-  *(uint*)(stack + PGSIZE - 2 * sizeof(void *)) = 0xFFFFFFF;
+  *(uint*)(stack + PGSIZE - 1 * sizeof(void *)) = (uint)arg;
+  *(uint*)(stack + PGSIZE - 2 * sizeof(void *)) = 0xFFFFFFFF;
 
-  // Initialize esp (stack pointer register) and ebp (stack base register)
-  // eip (instruction pointer)
+  // Set esp (stack pointer register) and ebp (stack base register)
+  // eip (instruction pointer register)
   np->tf->esp = (uint)stack + PGSIZE - 2 * sizeof(void*);
   np->tf->ebp = np->tf->esp;
   np->tf->eip = (uint) function;
