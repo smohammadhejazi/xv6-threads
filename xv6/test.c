@@ -5,11 +5,6 @@
 int stack[4096] __attribute__ ((aligned (4096)));
 int x = 0;
 
-void parrent(void *arg)
-{
-
-}
-
 void child(void *arg)
 {
     printf(1, "child argument is = %d\n", *(int *)arg);
@@ -34,8 +29,8 @@ int main(int argc, char *argv[])
     {
         for(;;)
         {
-        printf(1, "x = %d\n", x);
-        sleep(100);
+            printf(1, "x = %d\n", x);
+            sleep(100);
         }
     }
 
