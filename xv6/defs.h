@@ -121,7 +121,7 @@ int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 int             getyear(void);
-int             clone(void (*fcn)(void*, void*), void*, void*, void*);
+int             clone(void (*function)(void*, void*), void*, void*);
 int             join(void**);
 
 // swtch.S

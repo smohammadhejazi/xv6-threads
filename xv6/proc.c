@@ -540,9 +540,57 @@ getyear(void)
 }
 
 int
-clone(void(*function)(void*,void*), void *arg1, void *arg2, void* stack)
+clone(void (*function)(void*, void*), void* arg, void* stack)
 {
-  return -1;
+  int i, pid;
+  struct proc *np;
+  struct proc *curproc = myproc();
+
+  // Allocate process.
+  if((np = allocproc()) == 0){
+    return -1;
+  }
+
+  // <Code for new thread>
+
+  // Copy process data to new process with page table address
+  np->sz = curproc->sz;
+  np->pgdir = curproc->pgdir;
+  np->parent = curproc;
+  *np->tf = *curproc->tf;
+
+  // Stack pointer is at the bottom, bring it up; push return
+  // address and arg
+  *(uint*)(stack + PGSIZE - 1 * sizeof(void *)) = (uint*)arg;
+  *(uint*)(stack + PGSIZE - 2 * sizeof(void *)) = 0xFFFFFFF;
+
+  // Initialize esp (stack pointer register) and ebp (stack base register)
+  // eip (instruction pointer)
+  np->tf->esp = (uint)stack + PGSIZE - 2 * sizeof(void*);
+  np->tf->ebp = np->tf->esp;
+  np->tf->eip = (uint) function;
+
+  // </Code for new thread>
+
+  // Clear %eax so that fork returns 0 in the child.
+  np->tf->eax = 0;
+
+  for(i = 0; i < NOFILE; i++)
+    if(curproc->ofile[i])
+      np->ofile[i] = filedup(curproc->ofile[i]);
+  np->cwd = idup(curproc->cwd);
+
+  safestrcpy(np->name, curproc->name, sizeof(curproc->name));
+
+  pid = np->pid;
+
+  acquire(&ptable.lock);
+
+  np->state = RUNNABLE;
+
+  release(&ptable.lock);
+
+  return pid;
 }
 
 int
