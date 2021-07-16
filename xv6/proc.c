@@ -532,3 +532,7 @@ procdump(void)
     cprintf("\n");
   }
 }
+int getage()
+{
+  return 21;
+}
