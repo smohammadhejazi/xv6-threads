@@ -8,7 +8,7 @@ int x = 0;
 void child(void *arg)
 {
     printf(1, "child argument is = %d\n", *(int *)arg);
-    for(;;) 
+    for(int i = 0; i < 10; i++) 
     {
       x++;
       sleep(100);
@@ -27,12 +27,14 @@ int main(int argc, char *argv[])
     } 
     else 
     {
-        for(;;)
-        {
-            printf(1, "x = %d\n", x);
-            sleep(100);
-        }
+        // for(;;)
+        // {
+        //     printf(1, "x = %d\n", x);
+        //     sleep(100);
+        // }
+        join(tid);
     }
-
+    printf(1, "x = %d\n", x);
+    printf(1, "parrent terminated.\n");
     exit();
 }
