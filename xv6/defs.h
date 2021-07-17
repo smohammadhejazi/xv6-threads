@@ -122,7 +122,7 @@ void            wakeup(void*);
 void            yield(void);
 int             getyear(void);
 int             clone(void (*function)(void*), void*, void*);
-int             join(int tid);
+int             join(int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
