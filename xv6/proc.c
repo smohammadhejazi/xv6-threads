@@ -158,11 +158,10 @@ userinit(void)
 int
 growproc(int n)
 {
- uint sz;
+  uint sz;
   struct proc *curproc = myproc();
   struct proc *p;
 
-  acquire(&ptable.lock);
   sz = curproc->sz;
   if(n > 0){
     if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0)
@@ -180,6 +179,7 @@ growproc(int n)
   curproc->sz = sz;
   
   // Change size of page table of all threads
+  acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->pgdir != curproc->pgdir)
         continue;
@@ -616,7 +616,7 @@ clone(void (*function)(void*), void* arg, void* stack)
 }
 
 int
-join(int tid)
+join(int tid, void** stack)
 {
   struct proc *p;
   int havekids, pid;
@@ -635,7 +635,7 @@ join(int tid)
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        p->tstack = 0;
+        *stack = p->tstack;
         p->tstack = 0;
         p->pid = 0;
         p->parent = 0;

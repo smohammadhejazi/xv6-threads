@@ -25,7 +25,7 @@ int sleep(int);
 int uptime(void);
 int getyear(void);
 int clone(void (*function)(void*), void*, void*);
-int join(int);
+int join(int, void**);
 
 // ulib.c
 int stat(const char*, struct stat*);

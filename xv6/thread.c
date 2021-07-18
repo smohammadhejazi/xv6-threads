@@ -5,7 +5,6 @@
 
 int thread_create(void (*function) (void *), void *arg)
 {
-    int retval;
     void *stack = malloc(PGSIZE);
 
     if (stack == 0)
@@ -13,14 +12,15 @@ int thread_create(void (*function) (void *), void *arg)
     if ((uint)stack % PGSIZE != 0)
         stack += PGSIZE - ((uint)stack % PGSIZE);
     
-    retval = clone(function, arg, stack);
-    free(stack);
-
-    return retval;
+    return clone(function, arg, stack);
 }
 
 int thread_join(int tid)
 {
-    return join(tid);
+    int retval;
+    void *stack;
+    retval = join(tid, &stack);
+    free(stack);
+    return retval;
 }
 
