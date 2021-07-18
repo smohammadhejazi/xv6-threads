@@ -160,16 +160,35 @@ growproc(int n)
 {
   uint sz;
   struct proc *curproc = myproc();
+  struct proc *p;
 
   sz = curproc->sz;
   if(n > 0){
     if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0)
+    {
+      release(&ptable.lock);
       return -1;
+    }
   } else if(n < 0){
     if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
+    {
+      release(&ptable.lock);
       return -1;
+    }
   }
   curproc->sz = sz;
+  
+  // Change size of page table of all threads
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->pgdir != curproc->pgdir)
+        continue;
+
+      p->sz = sz;
+      switchuvm(p); 
+  }
+  release(&ptable.lock);
+
   switchuvm(curproc);
   return 0;
 }
@@ -281,7 +300,7 @@ wait(void)
     // Scan through table looking for exited children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->parent != curproc)
+      if(p->parent != curproc && p->pgdir != curproc->pgdir)
         continue;
       havekids = 1;
       if(p->state == ZOMBIE){
@@ -597,7 +616,7 @@ clone(void (*function)(void*), void* arg, void* stack)
 }
 
 int
-join(int tid)
+join(int tid, void** stack)
 {
   struct proc *p;
   int havekids, pid;
@@ -616,6 +635,7 @@ join(int tid)
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
+        *stack = p->tstack;
         p->tstack = 0;
         p->pid = 0;
         p->parent = 0;
