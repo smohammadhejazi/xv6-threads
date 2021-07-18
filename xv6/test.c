@@ -4,29 +4,30 @@
 #include "thread.h"
 
 //1
-// int x = 0;
 
-// void function(void *arg)
-// {
-//     for(int i = 0; i < 5; i++) 
-//     {
-//       printf(1, "wrting to x = %d\n", x);  
-//       x++;
-//       sleep(100);
-//     }
-// }
+int x = 0;
 
-// int main(int argc, char *argv[]) 
-// {
-//     int tid;
-//     int arg = 1;
-//     // int tid = fork();
-//     tid = thread_create(&function, &arg);
-//     thread_join(tid);
-//     printf(1, "x = %d\n", x);
-//     printf(1, "parrent terminated.\n");
-//     exit();
-// }
+void function(void *arg)
+{
+    for(int i = 0; i < 5; i++) 
+    {
+      x++;
+      printf(1, "Thread x = %d\n", x);  
+      sleep(100);
+    }
+    exit();
+}
+
+int main(int argc, char *argv[]) 
+{
+    int tid;
+    int arg = 1;
+    tid = thread_create(&function, &arg);
+    thread_join(tid);
+    printf(1, "Parent x = %d\n", x);
+    printf(1, "Parent terminated.\n");
+    exit();
+}
 
 // -1
 
@@ -34,53 +35,71 @@
 
 // int x = 0;
 
-// int fib(int n)
-// {
-//    if (n <= 1)
-//       return n;
-//    return fib(n-1) + fib(n-2);
-// }
-
 // int main(int argc, char *argv[]) 
 // {
-//     x = fib(35);
-//     printf(1, "hex = %x\n", x);
-//     printf(1, "int = %d\n", x);
-//     printf(1, "parrent terminated.\n");
-//     exit();
+//   int tid;
+
+//   tid = fork();
+//   if (tid < 0)
+//   {
+//     printf(2, "error!\n");
+//   }
+//   else if (tid > 0)
+//   {
+//     for(int i = 0; i < 5; i++)
+//     {
+//       x++;
+//       printf(1, "P = %d\n", x);
+//     }
+//     wait();
+//   }
+//   else
+//   {
+//     sleep(100);
+//     for(int i = 0; i < 5; i++)
+//     {
+//       printf(1, "C = %d\n", x);
+//     }
+//   }
+  
+//   printf(1, "Terminated.\n");
+//   exit();
 // }
 
 // -2
 
 // 3
 
-int x = 0;
+// int x = 0;
 
-int fib(int n)
-{
-if (n <= 1)
-	return n;
-return fib(n-1) + fib(n-2);
-}
+// int fib(int n)
+// {
+// if (n <= 1)
+// 	return n;
+// return fib(n-1) + fib(n-2);
+// }
 
-void function(void *arg)
-{
-  x = fib(*((int*)arg));
-  exit();
-}
+// void function(void *arg)
+// {
+//   printf(1, "Thread created.\n");
+//   x = fib(*((int*)arg));
+//   printf(1, "Thread x = %d\n", x);
+//   printf(1, "Thread terminated.\n");
+//   exit();
+// }
 
-int main(int argc, char *argv[]) 
-{
-    int tid;
-    int arg = 35;
+// int main(int argc, char *argv[]) 
+// {
+//     int tid;
+//     int arg = 35;
 
-    tid = thread_create(&function, &arg);
-    thread_join(tid);
-    printf(1, "x = %x\n", x);
-    printf(1, "x = %d\n", x);
-    printf(1, "parrent terminated.\n");
-    exit();
-}
+//     tid = thread_create(&function, &arg);
+//     thread_join(tid);
+//     printf(1, "Parent hex x = %x\n", x);
+//     printf(1, "Parent int x = %d\n", x);
+//     printf(1, "Parent terminated.\n");
+//     exit();
+// }
 
 // -3
 
@@ -88,9 +107,15 @@ int main(int argc, char *argv[])
 
 // int main(int argc, char *argv[]) 
 // {
-//     int mat[20000][20000];
-//     mat[1][1] = 10;
-//     printf(1, "%d\n", mat[1][1]);
+//     int mat[40][40];
+//     for (int i = 0; i < 40; i++)
+//     {
+//       for (int j = 0; j < 40; j++)
+//       {
+//         mat[i][j] = i;
+//       }
+//     }
+//     printf(1, "%d\n", mat[39][39]);
 //     exit();
 // }
 
@@ -101,8 +126,15 @@ int main(int argc, char *argv[])
 // void function(void *arg)
 // {
 //     int mat[20000][20000];
-//     mat[1][1] = 10;
-//     printf(1, "%d\n", mat[1][1]);
+//     for (int i = 0; i < 20000; i++)
+//     {
+//       for (int j = 0; j < 20000; j++)
+//       {
+//         mat[i][j] = i;
+//       }
+//     }
+//     printf(1, "Thread: %d\n", mat[10000][10000]);
+//     exit();
 // }
 
 // int main(int argc, char *argv[]) 
@@ -110,7 +142,7 @@ int main(int argc, char *argv[])
 //     int tid;
 //     tid = thread_create(&function, 0);
 //     thread_join(tid);
-//     printf(1, "parrent terminated.\n");
+//     printf(1, "Parent terminated.\n");
 //     exit();
 // }
 
