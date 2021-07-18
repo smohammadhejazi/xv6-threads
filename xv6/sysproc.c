@@ -116,10 +116,13 @@ sys_clone(void)
 int
 sys_join(void)
 {
-  int tid;
+  int tid, stack;
 
   if(argint(0, &tid) < 0)
     return -1;
 
-  return join(tid);
+  if(argint(1, &stack) < 0)
+    return -1;
+
+  return join(tid, (void **)stack);
 }
