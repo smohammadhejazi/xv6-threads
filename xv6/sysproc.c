@@ -100,6 +100,7 @@ int
 sys_clone(void)
 {
   int function, arg, stack;
+
   if(argint(0, &function) < 0)
     return -1;
 
@@ -115,5 +116,10 @@ sys_clone(void)
 int
 sys_join(void)
 {
-  return -1;
+  int tid;
+
+  if(argint(0, &tid) < 0)
+    return -1;
+
+  return join(tid);
 }
